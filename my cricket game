@@ -1,0 +1,171 @@
+package com.game.numberitem;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
+
+public class CricketGame extends JFrame {
+
+    private CardLayout cardLayout;
+    private JPanel mainPanel;
+    private String selectedGender;
+
+    public CricketGame() {
+        setTitle("Cricketer Selector");
+        setSize(600, 500);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        cardLayout = new CardLayout();
+        mainPanel = new JPanel(cardLayout);
+
+        // Adding different panels
+        mainPanel.add(createStartPanel(), "Start");
+        mainPanel.add(createGenderPanel(), "Gender");
+        mainPanel.add(createNumberPanel(), "Number");
+
+        add(mainPanel);
+        cardLayout.show(mainPanel, "Start");
+    }
+
+    private JPanel createStartPanel() {
+        JPanel startPanel = new JPanel();
+        startPanel.setLayout(new BorderLayout());
+
+        JLabel titleLabel = new JLabel("Welcome to the Cricketer Selector!", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 22));
+        titleLabel.setForeground(Color.WHITE);
+
+        startPanel.add(titleLabel, BorderLayout.CENTER);
+        startPanel.setBackground(new Color(123, 31, 162));
+        JButton startButton = new JButton("Start Game");
+        startButton.setFont(new Font("Arial", Font.BOLD, 16));
+        startButton.setBackground(new Color(255, 87, 34));
+        startButton.setForeground(Color.WHITE);
+        startButton.addActionListener(e -> cardLayout.show(mainPanel, "Gender"));
+        startPanel.add(startButton, BorderLayout.SOUTH);
+
+        return startPanel;
+    }
+
+    private JPanel createGenderPanel() {
+        JPanel genderPanel = new JPanel();
+        genderPanel.setLayout(new GridLayout(3, 1));
+        genderPanel.setBackground(new Color(13, 71, 161));
+
+        JLabel genderLabel = new JLabel("Choose Your Gender", SwingConstants.CENTER);
+        genderLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        genderLabel.setForeground(Color.WHITE);
+        genderPanel.add(genderLabel);
+
+        JButton boyButton = new JButton("Boy");
+        styleButton(boyButton, new Color(255, 140, 0));
+        boyButton.addActionListener(e -> {
+            selectedGender = "Boy";
+            cardLayout.show(mainPanel, "Number");
+        });
+        genderPanel.add(boyButton);
+
+        JButton girlButton = new JButton("Girl");
+        styleButton(girlButton, new Color(255, 64, 129));
+        girlButton.addActionListener(e -> {
+            selectedGender = "Girl";
+            cardLayout.show(mainPanel, "Number");
+        });
+        genderPanel.add(girlButton);
+
+        return genderPanel;
+    }
+
+    private JPanel createNumberPanel() {
+        JPanel numberPanel = new JPanel();
+        numberPanel.setLayout(new BorderLayout());
+
+        JLabel instructionLabel = new JLabel("Select a number (1-100) to see a cricketer:", SwingConstants.CENTER);
+        instructionLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        instructionLabel.setForeground(Color.WHITE);
+        numberPanel.add(instructionLabel, BorderLayout.NORTH);
+        numberPanel.setBackground(new Color(3, 169, 244));
+
+        JPanel keypadPanel = new JPanel(new GridLayout(10, 10, 5, 5)); // 10 rows, 10 columns for numbers 1-100
+        for (int i = 1; i <= 100; i++) {
+            JButton button = new JButton(String.valueOf(i));
+            button.setFont(new Font("Arial", Font.BOLD, 14));
+            button.setBackground(new Color(255, 204, 128));
+            button.setForeground(new Color(51, 51, 51));
+            button.addActionListener(new NumberButtonListener(i));
+            keypadPanel.add(button);
+        }
+        numberPanel.add(keypadPanel, BorderLayout.CENTER);
+
+        return numberPanel;
+    }
+
+    private void styleButton(JButton button, Color bgColor) {
+        button.setFont(new Font("Arial", Font.BOLD, 16));
+        button.setBackground(bgColor);
+        button.setForeground(Color.WHITE);
+    }
+
+    private class NumberButtonListener implements ActionListener {
+        private int number;
+
+        public NumberButtonListener(int number) {
+            this.number = number;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            showCricketer(number);
+        }
+    }
+
+    private void showCricketer(int number) {
+        Map<Integer, String> cricketers = generateCricketerNames();
+        String cricketer = cricketers.get(number);
+
+        // Show cricketer in a dialog
+        JOptionPane.showMessageDialog(this,
+                "Gender: " + selectedGender + "\nNumber: " + number + "\nCricketer: " + cricketer,
+                "Famous Cricketer for Number " + number,
+                JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private Map<Integer, String> generateCricketerNames() {
+        Map<Integer, String> cricketers = new HashMap<>();
+
+        String[] cricketerNames = {
+                "Sachin Tendulkar", "Virat Kohli", "MS Dhoni", "Rohit Sharma", "Sourav Ganguly",
+                "Kapil Dev", "Rahul Dravid", "Anil Kumble", "Sunil Gavaskar", "Yuvraj Singh",
+                "Jasprit Bumrah", "KL Rahul", "Ravindra Jadeja", "Hardik Pandya", "Shikhar Dhawan",
+                "Ravichandran Ashwin", "Cheteshwar Pujara", "VVS Laxman", "Dinesh Karthik", "Ajinkya Rahane",
+                "Brian Lara", "Shane Warne", "Ricky Ponting", "Jacques Kallis", "AB de Villiers",
+                "Kumar Sangakkara", "Wasim Akram", "Imran Khan", "Shahid Afridi", "Kevin Pietersen",
+                "Chris Gayle", "Glenn McGrath", "Muttiah Muralitharan", "Brett Lee", "Virender Sehwag",
+                "Adam Gilchrist", "Mark Waugh", "Steve Waugh", "Michael Clarke", "Inzi Azhar",
+                "Shahid Afridi", "Younis Khan", "Saqlain Mushtaq", "Mohammad Amir", "Javed Miandad",
+                "Curtly Ambrose", "Courtney Walsh", "Lara", "Brian Lara", "Garry Sobers",
+                "Ian Botham", "Allan Border", "Mike Gatting", "Eoin Morgan", "Joe Root",
+                "Ben Stokes", "Jos Buttler", "Jason Holder", "Kieron Pollard", "Chris Woakes",
+                "Mark Wood", "Moeen Ali", "Adil Rashid", "Jasprit Bumrah", "Rohit Sharma",
+                "Shikhar Dhawan", "Bhuvneshwar Kumar", "Deepak Chahar", "Washington Sundar", "Irfan Pathan",
+                "Mohammad Nabi", "Rashid Khan", "Shafiqullah Shafiq", "Asghar Afghan", "Hashmatullah Shahidi",
+                "Shahid Afridi", "Babar Azam", "Mohammad Hafeez", "Fakhar Zaman", "Shaheen Afridi"
+        };
+
+        for (int i = 0; i < cricketerNames.length; i++) {
+            cricketers.put(i + 1, cricketerNames[i]);
+        }
+        return cricketers;
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            CricketGame game = new CricketGame();
+            game.setVisible(true);
+        });
+    }
+}
